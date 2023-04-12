@@ -22,6 +22,7 @@ func init() {
 		client = abdm.New(clientid, clientsecret)
 	}
 }
+
 func main() {
 
 	if err := client.Authenticate(); err != nil {

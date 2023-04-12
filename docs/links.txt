@@ -1,0 +1,2 @@
+swagger = https://sandbox.abdm.gov.in/swagger/ndhm-hip.yaml
+guide = https://sandbox.abdm.gov.in/docs/guide
