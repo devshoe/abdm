@@ -14,7 +14,7 @@ func (c *Client) RegisterHIU(uid, name string, aliases []string) (err error) {
 
 	request.ID = uid
 	request.Name = name
-	request.Type = models.RegistrationTypeHIU
+	request.Type = models.ServiceTypeHIU
 	request.Active = true
 	request.Alias = aliases
 
@@ -37,7 +37,7 @@ func (c *Client) RegisterHIP(uid, name string, aliases []string) (err error) {
 
 	request.ID = uid
 	request.Name = name
-	request.Type = models.RegistrationTypeHIU
+	request.Type = models.ServiceTypeHIP
 	request.Active = true
 	request.Alias = aliases
 

@@ -9,8 +9,8 @@ import (
 // Authenticate retrieves access token and refresh token if credentials are valid
 func (c *Client) Authenticate() (err error) {
 	var (
-		request  models.AuthenticationRequest
-		response models.AuthenticationResponse
+		request  models.SessionRequest
+		response models.SessionResponse
 		method                     = "POST"
 		headers  map[string]string = nil
 		code     int
