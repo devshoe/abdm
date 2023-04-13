@@ -1,0 +1,5 @@
+npm install -g api-spec-converter
+api-spec-converter --from=openapi_3 --to=swagger_2 --syntax=json --order=alpha ./docs/hip.swagger.yaml >> ./docs/hip.swagger.json
+brew tap go-swagger/go-swagger
+brew install go-swagger
+swagger generate client -m models -a abdm -f docs/hip.swagger.json

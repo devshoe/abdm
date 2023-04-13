@@ -1,38 +1,33 @@
 package abdm
 
 import (
-	"bytes"
-	"encoding/json"
-	"net/http"
+	"fmt"
 
 	"github.com/devshoe/abdm/pkg/abdm/models"
 )
 
-func (c *Client) Authenticate() error {
+// Authenticate retrieves access token and refresh token if credentials are valid
+func (c *Client) Authenticate() (err error) {
 	var (
-		requestbody  models.AuthenticationRequest
-		responsebody models.AuthenticationResponse
-		url          = "https://dev.abdm.gov.in/gateway/v0.5/sessions"
+		request  models.AuthenticationRequest
+		response models.AuthenticationResponse
+		method                     = "POST"
+		headers  map[string]string = nil
+		code     int
 	)
-	requestbody.ClientID = c.ClientID
-	requestbody.ClientSecret = c.ClientSecret
 
-	payloadBytes, _ := json.Marshal(requestbody)
+	request.ClientID = c.ClientID
+	request.ClientSecret = c.ClientSecret
 
-	request, _ := http.NewRequest("POST", url, bytes.NewBuffer(payloadBytes))
-	request.Header.Set("Content-Type", "application/json")
-	if response, err := c.c.Do(request); err != nil {
+	if code, err = do(c.c, method, URISession, headers, request, &response); err != nil {
 		return err
-	} else {
-		defer response.Body.Close()
-
-		if err := json.NewDecoder(response.Body).Decode(&responsebody); err != nil {
-			return err
-		}
-		c.AccessToken = responsebody.AccessToken
-		c.RefreshToken = responsebody.RefreshToken
+	} else if code != 200 {
+		fmt.Println(response)
+		return fmt.Errorf("authenticate: response code %d", code)
 	}
 
-	return nil
+	c.AccessToken = response.AccessToken
+	c.RefreshToken = response.RefreshToken
 
+	return
 }

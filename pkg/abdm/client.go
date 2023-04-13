@@ -1,8 +1,6 @@
 package abdm
 
 import (
-	"bytes"
-	"encoding/json"
 	"net/http"
 	"net/http/cookiejar"
 )
@@ -31,31 +29,20 @@ func New(clientID, clientSecret string) *Client {
 	}
 }
 
-func (c *Client) do(method, url string, headers map[string]string, requestBody, responseBody any) error {
-	var request *http.Request
-
-	if requestBody != nil {
-		payloadBytes, _ := json.Marshal(requestBody)
-		request, _ = http.NewRequest(method, url, bytes.NewBuffer(payloadBytes))
-	} else {
-		request, _ = http.NewRequest(method, url, nil)
+func (c *Client) defaultHeaders(addHIU, addHIP, addCM bool) map[string]string {
+	headers := map[string]string{
+		"Authorization": "Bearer " + c.AccessToken,
 	}
 
-	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", "Bearer "+c.AccessToken)
-
-	for key, value := range headers {
-		request.Header.Set(key, value)
+	if addHIU {
+		headers["X-HIU-ID"] = c.HIURegistrationID
+	}
+	if addHIP {
+		headers["X-HIP-ID"] = c.HIPRegistrationID
+	}
+	if addCM {
+		headers["X-CM-ID"] = c.ConsentManagerID
 	}
 
-	if response, err := c.c.Do(request); err != nil {
-		return err
-	} else {
-		defer response.Body.Close()
-		if err := json.NewDecoder(response.Body).Decode(responseBody); err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return headers
 }
